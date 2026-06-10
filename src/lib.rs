@@ -77,12 +77,14 @@ pub fn raw_char_count(input: &str) -> usize {
 /// Estimate whether a complete message fits Telegram's `sendMessage.text`
 /// length limit.
 ///
-/// This checks `input.chars().count() <= 4096`. It is only an estimate for
-/// messages sent with `parse_mode`, because Telegram applies the limit after
-/// entity parsing. Use this as a guardrail, not proof that Telegram will accept
-/// the message.
+/// This checks `1 <= input.chars().count() <= 4096`. It is only an estimate
+/// for messages sent with `parse_mode`, because Telegram applies the limit
+/// after entity parsing. Use this as a guardrail, not proof that Telegram will
+/// accept the message.
 pub fn fits_send_message_text_limit_estimate(input: &str) -> bool {
-    raw_char_count(input) <= SEND_MESSAGE_TEXT_MAX_CHARS
+    let count = raw_char_count(input);
+
+    count > 0 && count <= SEND_MESSAGE_TEXT_MAX_CHARS
 }
 
 /// Return text unchanged for messages sent without `parse_mode`.
@@ -265,6 +267,11 @@ mod tests {
         let message = "x".repeat(SEND_MESSAGE_TEXT_MAX_CHARS);
 
         assert!(fits_send_message_text_limit_estimate(&message));
+    }
+
+    #[test]
+    fn estimate_rejects_empty_message() {
+        assert!(!fits_send_message_text_limit_estimate(""));
     }
 
     #[test]
