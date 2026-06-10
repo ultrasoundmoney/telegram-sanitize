@@ -1,0 +1,13 @@
+[package]
+name = "telegram-sanitize"
+version = "0.1.0"
+edition = "2024"
+description = "Pure string sanitation helpers for Telegram Bot API messages"
+license = "MIT"
+repository = "https://github.com/ultrasoundmoney/telegram-sanitize"
+
+[lib]
+name = "telegram_sanitize"
+path = "src/lib.rs"
+
+[dependencies]
